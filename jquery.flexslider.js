@@ -27,7 +27,12 @@
         fade = slider.vars.animation === "fade",
         asNav = slider.vars.asNavFor !== "",
         methods = {},
-        focused = true;
+        focused = true,
+        //mod
+        landscape = slider.vars.orientation === "landscape";
+
+    //mod: orientation portrait forces vertical to true;
+    if(!landscape) vertical = true;
 
     // Store a reference to the slider object
     $.data(el, "flexslider", slider);
@@ -639,6 +644,13 @@
 
     // public methods
     slider.flexAnimate = function(target, pause, override, withSync, fromNav) {
+
+      /*
+      //mod: cache active-slide height if vertical
+      console.log(slider.currentSlide.);
+      var activeSlideHeight = (vertical) ? slider.slides.filter('.flex-active-slide').height() : 0;
+      */
+
       if (!slider.vars.animationLoop && target !== slider.currentSlide) {
         slider.direction = (target > slider.currentSlide) ? "next" : "prev";
       }
@@ -699,7 +711,7 @@
 
         // SLIDE:
         if (!fade) {
-          var dimension = (vertical) ? slider.slides.filter(':first').height() : slider.computedW,
+          var dimension = (vertical) ? $(slider.slides[slider.currentSlide]).height() : slider.computedW,
               margin, slideString, calcNext;
 
           // INFINITE LOOP / REVERSE:
@@ -713,15 +725,24 @@
           } else if (slider.currentSlide === slider.last && target === 0 && slider.vars.animationLoop && slider.direction !== "prev") {
             slideString = (reverse) ? 0 : (slider.count + 1) * dimension;
           } else {
-            slideString = (reverse) ? ((slider.count - 1) - target + slider.cloneOffset) * dimension : (target + slider.cloneOffset) * dimension;
+            //match
+            if(landscape)
+            {
+              slideString = (reverse) ? ((slider.count - 1) - target + slider.cloneOffset) * dimension : (target + slider.cloneOffset) * dimension;
+            }
+            else
+            {
+              slideString = $(slider.slides[slider.currentSlide])[0].offsetTop + dimension;
+            }
           }
+          console.log(slideString);
           slider.setProps(slideString, "", slider.vars.animationSpeed);
           if (slider.transitions) {
             if (!slider.vars.animationLoop || !slider.atEnd) {
               slider.animating = false;
               slider.currentSlide = slider.animatingTo;
             }
-            
+
             // Unbind previous transitionEnd events and re-bind new transitionEnd event
             slider.container.unbind("webkitTransitionEnd transitionend");
             slider.container.bind("webkitTransitionEnd transitionend", function() {
@@ -1080,7 +1101,7 @@
     // Usability features
     pauseOnAction: true,            //Boolean: Pause the slideshow when interacting with control elements, highly recommended.
     pauseOnHover: false,            //Boolean: Pause the slideshow when hovering over slider, then resume when no longer hovering
-    pauseInvisible: true,   		//{NEW} Boolean: Pause the slideshow when tab is invisible, resume when visible. Provides better UX, lower CPU usage.
+    pauseInvisible: true,       //{NEW} Boolean: Pause the slideshow when tab is invisible, resume when visible. Provides better UX, lower CPU usage.
     useCSS: true,                   //{NEW} Boolean: Slider will use CSS3 transitions if available
     touch: true,                    //{NEW} Boolean: Allow touch swipe navigation of the slider on touch-enabled devices
     video: false,                   //{NEW} Boolean: If using video in the slider, will prevent CSS3 3D Transforms to avoid graphical glitches
@@ -1112,6 +1133,8 @@
     maxItems: 0,                    //{NEW} Integer: Maxmimum number of carousel items that should be visible. Items will resize fluidly when above this limit.
     move: 0,                        //{NEW} Integer: Number of carousel items that should move on animation. If 0, slider will move all visible items.
     allowOneSlide: true,           //{NEW} Boolean: Whether or not to allow a slider comprised of a single slide
+
+    orientation: "landscape",      //{MOD} String: Select the whole slider orientation, "landscape" or "portrait"
 
     // Callback API
     start: function(){},            //Callback: function(slider) - Fires when the slider loads the first slide
