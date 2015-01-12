@@ -711,8 +711,31 @@
 
         // SLIDE:
         if (!fade) {
-          var dimension = (vertical) ? $(slider.slides[slider.currentSlide]).height() : slider.computedW,
-              margin, slideString, calcNext;
+          var margin, slideString, calcNext, dimension;
+
+          //mod
+          if(!vertical)
+          {
+            dimension = slider.computedW;
+          }
+          else
+          {
+            dimension = 0;
+            if(slider.direction === "next")
+            {
+                for(var i = slider.currentSlide; i < slider.animatingTo; i++)
+                {
+                    dimension += $(slider.slides[i]).height();
+                }
+            }
+            else
+            {
+                for(var i = slider.currentSlide - 1; i >= slider.animatingTo; i--)
+                {
+                    dimension -= $(slider.slides[i]).height();
+                }
+            }
+          }
 
           // INFINITE LOOP / REVERSE:
           if (carousel) {
@@ -732,10 +755,10 @@
             }
             else
             {
-              slideString = $(slider.slides[slider.currentSlide])[0].offsetTop + dimension;
+                slideString = $(slider.slides[slider.currentSlide])[0].offsetTop + dimension;
             }
           }
-          console.log(slideString);
+
           slider.setProps(slideString, "", slider.vars.animationSpeed);
           if (slider.transitions) {
             if (!slider.vars.animationLoop || !slider.atEnd) {
