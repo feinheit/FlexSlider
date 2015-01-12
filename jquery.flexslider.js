@@ -719,14 +719,14 @@
             {
                 for(var i = slider.currentSlide; i < slider.animatingTo; i++)
                 {
-                    dimension += $(slider.slides[i]).height();
+                    dimension += $(slider.slides[i]).height() + slider.vars.itemMargin;
                 }
             }
             else
             {
                 for(var i = slider.currentSlide - 1; i >= slider.animatingTo; i--)
                 {
-                    dimension -= $(slider.slides[i]).height();
+                    dimension -= $(slider.slides[i]).height() + slider.vars.itemMargin;
                 }
             }
           }
