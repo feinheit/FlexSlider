@@ -645,12 +645,6 @@
     // public methods
     slider.flexAnimate = function(target, pause, override, withSync, fromNav) {
 
-      /*
-      //mod: cache active-slide height if vertical
-      console.log(slider.currentSlide.);
-      var activeSlideHeight = (vertical) ? slider.slides.filter('.flex-active-slide').height() : 0;
-      */
-
       if (!slider.vars.animationLoop && target !== slider.currentSlide) {
         slider.direction = (target > slider.currentSlide) ? "next" : "prev";
       }
@@ -751,7 +745,7 @@
             //match
             if(landscape)
             {
-              slideString = (reverse) ? ((slider.count - 1) - target + slider.cloneOffset) * dimension : (target + slider.cloneOffset) * dimension;
+                slideString = (reverse) ? ((slider.count - 1) - target + slider.cloneOffset) * dimension : (target + slider.cloneOffset) * dimension;
             }
             else
             {
